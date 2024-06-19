@@ -126,8 +126,6 @@ public class FurySerializer extends AbstractSerializer {
             }
         } catch (Exception e) {
             throw buildSerializeError(e.getMessage(), e);
-        } finally {
-            fury.clearClassLoader(contextClassLoader);
         }
     }
 
@@ -149,8 +147,6 @@ public class FurySerializer extends AbstractSerializer {
             }
         } catch (Exception e) {
             throw buildDeserializeError(e.getMessage(), e);
-        } finally {
-            fury.clearClassLoader(contextClassLoader);
         }
     }
 
@@ -171,8 +167,6 @@ public class FurySerializer extends AbstractSerializer {
             }
         } catch (Exception e) {
             throw buildDeserializeError(e.getMessage(), e);
-        } finally {
-            fury.clearClassLoader(contextClassLoader);
         }
     }
 
