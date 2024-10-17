@@ -35,10 +35,12 @@ import io.fury.ThreadLocalFury;
 import io.fury.ThreadSafeFury;
 import io.fury.config.Language;
 import io.fury.memory.MemoryBuffer;
+import io.fury.pool.ThreadPoolFury;
 import io.fury.resolver.AllowListChecker;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static io.fury.config.CompatibleMode.COMPATIBLE;
 
@@ -53,7 +55,7 @@ public class FurySerializer extends AbstractSerializer {
     private final String           checkerMode = SofaConfigs.getOrDefault(RpcConfigKeys.SERIALIZE_CHECKER_MODE);
 
     public FurySerializer() {
-        fury = new ThreadLocalFury(classLoader -> {
+        fury = new ThreadPoolFury(classLoader -> {
             Fury f = Fury.builder().withLanguage(Language.JAVA)
                     .withRefTracking(true)
                     .withCodegen(true)
@@ -102,7 +104,7 @@ public class FurySerializer extends AbstractSerializer {
             f.register(SofaResponse.class);
             f.register(SofaRpcException.class);
             return f;
-        });
+        }, 1, 20, 300, TimeUnit.SECONDS); // todo: should make as config
         addCustomSerializer(SofaRequest.class, new SofaRequestFurySerializer(fury));
         addCustomSerializer(SofaResponse.class, new SofaResponseFurySerializer(fury));
     }
